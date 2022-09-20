@@ -1,4 +1,4 @@
-version: 2
+version: 3
 projects:
 - name: network
   dir: deployment/network
@@ -11,11 +11,6 @@ projects:
   dir: deployment/jumphost
   workflow: jumphost
   apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  autoplan:
-    enabled: false
-
-- name: default
-  workflow: default
   autoplan:
     enabled: false
 

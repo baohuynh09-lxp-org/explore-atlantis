@@ -17,7 +17,7 @@ workflows:
       steps:
       - run: |
           rm -rf .terraform
-          echo "COMMENT_ARGS:# $COMMENT_ARGS"
+          echo "COMMENT_ARGS: $COMMENT_ARGS"
       - init:
           extra_args: [-backend-config=../backends/${COMMENT_ARGS}.backend.tf]
       - plan:

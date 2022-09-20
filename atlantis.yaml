@@ -23,8 +23,8 @@ workflows:
           echo "COMMENT_ARGS: $COMMENT_ARGS"
       - run: |
           eval "terraform init -backend-config=../backends/${COMMENT_ARGS}.backend.tf"
-      - run: |
-          eval "terraform plan -var-file=../env/${COMMENT_ARGS}.tfvars"
+      #- run: |
+      #    eval "terraform plan -var-file=../env/${COMMENT_ARGS}.tfvars"
 
     apply:
       steps:

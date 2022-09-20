@@ -4,8 +4,6 @@ terraform {
     bucket         = "lxp-enterprise-saas-uswest2-tf"
     key            = "lxp-enterprise-saas-uswest2-tf.tfstate"
 
-    access_key     = ""
-    secret_key     = ""
     encrypt        = "true"
 
     # Using locking state with dynamoDB
@@ -26,12 +24,6 @@ terraform {
 provider "aws" {
   region = var.region
 }
-
-#provider "kubernetes" {
-#  host                   = data.aws_eks_cluster.cluster.endpoint
-#  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-#  token                  = data.aws_eks_cluster_auth.cluster.token
-#}
 
 provider "helm" {
   kubernetes {

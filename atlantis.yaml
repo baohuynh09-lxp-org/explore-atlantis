@@ -1,19 +1,30 @@
 version: 2
 projects:
-- name: dev-sandbox
-  dir: env/dev-sandbox-us-west-2
-  workflow: dev-sandbox
+- name: network
+  dir: deployment/network
+  workflow: network
   apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+
+- name: jumphost
+  dir: deployment/jumphost
+  workflow: jumphost
+  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+
+
 workflows:
-  dev-sandbox:
+  network:
     plan:
       steps:
-      - init
-      - run: terraform state list
-      - run: terraform plan -target=module.vpc
+      - run: rm -rf .terraform ; echo "COMMENT_ARGS:# $COMMENT_ARGS"
+      - init:
+          extra_args: [-backend-config=../backends/${COMMENT_ARGS}.backend.tf]
+      - plan:
+          extra_args: [-var-file=../env/${COMMENT_ARGS}.tfvars]
+
     apply:
       steps:
-      - init
-      - run: terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
-      - run: terraform apply -no-color $PLANFILE | terrahelp mask
-
+      - run: rm -rf .terraform ; echo "COMMENT_ARGS:# $COMMENT_ARGS"
+      - init:
+          extra_args: [-backend-config=../backends/${COMMENT_ARGS}.backend.tf]
+      - plan:
+          extra_args: [-var-file=../env/${COMMENT_ARGS}.tfvars]

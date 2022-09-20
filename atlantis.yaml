@@ -20,9 +20,10 @@ workflows:
       steps:
       - run: |
           rm -rf .terraform
-          echo "COMMENT_ARGS: $COMMENT_ARGS"
+          TF_ARG=$(echo $COMMENT_ARGS | tr ',' ' ' | sed -r 's/\\(.)/\1/g')
+          echo "TF_ARG: $TF_ARG"
       - run: |
-          eval "terraform init -backend-config=../backends/${COMMENT_ARGS}.backend.tf"
+          eval "terraform init -backend-config=../backends/${TF_ARG}.backend.tf"
       #- run: |
       #    eval "terraform plan -var-file=../env/${COMMENT_ARGS}.tfvars"
 

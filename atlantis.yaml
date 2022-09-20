@@ -1,0 +1,19 @@
+version: 2
+projects:
+- name: dev-sandbox
+  dir: env/dev-sandbox-us-west-2
+  workflow: dev-sandbox
+  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+workflows:
+  dev-sandbox:
+    plan:
+      steps:
+      - init
+      - run: terraform state list
+      - run: terraform plan -target=module.vpc
+    apply:
+      steps:
+      - init
+      - run: terraform workspace select $WORKSPACE || terraform workspace new $WORKSPACE
+      - run: terraform apply -no-color $PLANFILE | terrahelp mask
+

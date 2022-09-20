@@ -1,0 +1,79 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eksstaticip-deployment
+  labels:
+    app: eksstaticip
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eksstaticip
+  template:
+    metadata:
+      labels:
+        app: eksstaticip
+    spec:
+      tolerations:
+      - key: public_workload
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      nodeSelector:
+        public_workload: "true"
+
+      hostNetwork: true
+      initContainers:
+      - name: eip
+        #image: mikesir87/aws-cli:2.1.6
+        image: nsnow/aws-cli-jq:1
+        command:
+        - /bin/bash
+        - -xec
+        - |
+          #apt-get update; 
+          #apt-get -y install curl;
+          #apk update; apk add curl;
+          #which amazon-linux-extras;
+          #sudo yum install -y amazon-linux-extras; amazon-linux-extras; 
+          #sudo yum install curl -y;
+          INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+          PUBLIC_IP_TO_DISASSOCIATE=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+          REGION=$(curl --silent http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+          #NODEGROUP_NAME_FROM_TAGS=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" --region=$REGION | jq '.Tags[] | select(.Key == "aws:autoscaling:groupName") | {Value}' | jq -r '.Value')
+          NETWORK_INTERFACE_ID=$(aws ec2 describe-network-interfaces --filters Name=addresses.association.public-ip,Values=$PUBLIC_IP_TO_DISASSOCIATE --region=$REGION | jq '.NetworkInterfaces[] | {NetworkInterfaceId}' | jq -r '.NetworkInterfaceId')
+          #ALLOCATION_ID=$(aws ec2 describe-addresses --filters "Name=tag:autoscaling:groupName,Values=$NODEGROUP_NAME_FROM_TAGS" --region=$REGION | jq '.Addresses | .[] | select(.AssociationId == null)' | jq '{AllocationId}'| jq -r '.AllocationId')
+          ALLOCATION_ID=$(aws ec2 describe-addresses --filters "Name=tag:public_workload,Values=true" --region=$REGION | jq '.Addresses | .[] | select(.AssociationId == null)' | jq '{AllocationId}'| jq -r '.AllocationId')
+          ALLOCATION_ID=$(echo $ALLOCATION_ID | cut -d ' ' -f1)
+          if [[ $ALLOCATION_ID == "" ]]
+          then
+            echo "No Elastic IP is available. Gracefully exiting ...."
+            exit 0
+          fi
+          echo "Attempt to Associate Address will start. Check logs for error if there is a Crash Back Loop Off"
+          aws ec2 associate-address --allocation-id "$ALLOCATION_ID" --network-interface-id "$NETWORK_INTERFACE_ID" --region=$REGION --no-allow-reassociation
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: awsKeyId
+              name: eksstaticipsecret
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: awsSecretKey
+              name: eksstaticipsecret
+      containers:
+      #- name: myapp-container
+      #  image: busybox
+      #  command: ['sh', '-c', 'echo The app is running! && sleep 15']
+      - name: pause
+        image: gcr.io/google_containers/pause
+        resources:
+          limits:
+            cpu: 50m
+            memory: 10Mi
+          requests:
+            cpu: 50m
+            memory: 10Mi
+

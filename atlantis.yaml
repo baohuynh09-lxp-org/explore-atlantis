@@ -21,7 +21,9 @@ workflows:
       - run: |
           rm -rf .terraform
           TF_ARG=$(echo $COMMENT_ARGS | tr ',' ' ' | sed -r 's/\\(.)/\1/g')
+          echo "COMMENT_ARGS: $COMMENT_ARGS"
           echo "TF_ARG: $TF_ARG"
+
       - run: |
           eval "terraform init -backend-config=../backends/${TF_ARG}.backend.tf"
       #- run: |

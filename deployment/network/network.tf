@@ -7,11 +7,11 @@
 module "security_group" {
   source  = "../../modules/security_group"
 
-  # Providers Within Modules
-  # Easier for us to "terraform destroy module separately"
-  providers = {
-    aws = aws
-  }
+  ## Providers Within Modules
+  ## Easier for us to "terraform destroy module separately"
+  #providers = {
+  #  aws = aws
+  #}
 
   name        = "${var.sg_input.name}"
   description = "private access to database subnets"

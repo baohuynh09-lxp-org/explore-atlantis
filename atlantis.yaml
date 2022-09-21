@@ -30,7 +30,7 @@ workflows:
       - init:
           extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
       - plan:
-          extra_args: [-var-file=../env/dev-sandbox.tfvars]
+          extra_args: [-var-file=../env/dev-sandbox.tfvars -input=false -refresh -out $PLANFILE]
 
       #- run: |
       #    eval "terraform init -backend-config=../backends/${TF_ARG}.backend.tf"
@@ -41,10 +41,10 @@ workflows:
       steps:
       ##- run: |
       ##    rm -rf .terraform 
-      - init:
-          extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
+      #- init:
+      #    extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
       - apply:
-          extra_args: [-var-file=../env/dev-sandbox.tfvars]
+          extra_args: [$PLANFILE]
 
 
   jumphost:

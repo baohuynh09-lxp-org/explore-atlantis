@@ -22,7 +22,7 @@ workflows:
           rm -rf .terraform
           #TF_ARG=$(echo $COMMENT_ARGS | tr ',' ' ' | sed -r 's/\\(.)/\1/g')
           #echo "TF_ARG: $TF_ARG"
-          TEST1=$(printf '%b\n' )
+          TEST1=$(printf '%b\n' "$COMMENT_ARGS")
           echo "COMMENT_ARGS: $COMMENT_ARGS"
           echo "TEST1: $TEST1"
 

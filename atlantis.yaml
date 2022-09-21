@@ -20,7 +20,6 @@ workflows:
       steps:
       - run: |
           rm -rf .terraform
-          ls -la
       #    #TF_ARG=$(echo $COMMENT_ARGS | tr ',' ' ' | sed -r 's/\\(.)/\1/g')
       #    #echo "TF_ARG: $TF_ARG"
       #    TEST1=$(printf '%b\n' "$COMMENT_ARGS")
@@ -31,6 +30,8 @@ workflows:
           extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
       - run: |
           terraform plan -var-file=../env/dev-sandbox.tfvars -input=false -out $PLANFILE
+          echo "PLANFILE: $PLANFILE"
+          ls $PLANFILE
       #- plan:
       #    extra_args: [-var-file=../env/dev-sandbox.tfvars -input=false -refresh -out $PLANFILE]
 
@@ -46,6 +47,8 @@ workflows:
       #- init:
       #    extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
       - run: |
+          echo "PLANFILE: $PLANFILE"
+          ls $PLANFILE
           terraform apply $PLANFILE
 
 

@@ -43,7 +43,7 @@ workflows:
       ##    rm -rf .terraform 
       #- init:
       #    extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
-      - apply:
+      - apply
       #    extra_args: [-var-file=../env/dev-sandbox.tfvars]
 
 

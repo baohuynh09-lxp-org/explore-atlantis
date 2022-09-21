@@ -41,11 +41,11 @@ workflows:
       steps:
       - run: |
           rm -rf .terraform 
-          echo "COMMENT_ARGS:# $COMMENT_ARGS"
       - init:
-          extra_args: [-backend-config=../backends/dev-sandbox.backend.tf]
-      - plan:
+          extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
+      - apply:
           extra_args: [-var-file=../env/dev-sandbox.tfvars]
+
 
   jumphost:
     plan:

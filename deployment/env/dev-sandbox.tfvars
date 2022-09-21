@@ -69,18 +69,18 @@ eks_input = {
       #worker_additional_security_group_ids = [aws_security_group.public_subnet_access_private.id]
     }
 
-    #nodepool_voip = {
-    #  name                          = "nodepool_voip"
-    #  #subnets                       = module.vpc.public_subnets
-    #  desired_capacity              = 3
-    #  max_capacity                  = 3
-    #  min_capacity                  = 3
-    #  instance_types                = ["t3.small"]
-    #  capacity_type                 = "ON_DEMAND"
-    #  public_ip                     = true
-    #  create_launch_template        = true
-    #  kubelet_extra_args            = "--register-with-taints=nodepool_voip=true:NoSchedule --node-labels=nodepool_voip=true"
-    #}
+    nodepool_voip = {
+      name                          = "nodepool_voip"
+      #subnets                       = module.vpc.public_subnets
+      desired_capacity              = 3
+      max_capacity                  = 3
+      min_capacity                  = 3
+      instance_types                = ["t3.small"]
+      capacity_type                 = "ON_DEMAND"
+      public_ip                     = true
+      create_launch_template        = true
+      kubelet_extra_args            = "--register-with-taints=nodepool_voip=true:NoSchedule --node-labels=nodepool_voip=true"
+    }
   }
 }
 

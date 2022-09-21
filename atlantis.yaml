@@ -29,8 +29,10 @@ workflows:
 
       - init:
           extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
-      - plan:
-          extra_args: [-var-file=../env/dev-sandbox.tfvars -input=false -refresh -out $PLANFILE]
+      - run: |
+          terraform plan -var-file=../env/dev-sandbox.tfvars -input=false -refresh -out $PLANFILE
+      #- plan:
+      #    extra_args: [-var-file=../env/dev-sandbox.tfvars -input=false -refresh -out $PLANFILE]
 
       #- run: |
       #    eval "terraform init -backend-config=../backends/${TF_ARG}.backend.tf"

@@ -39,8 +39,8 @@ workflows:
 
     apply:
       steps:
-      - run: |
-          rm -rf .terraform 
+      #- run: |
+      #    rm -rf .terraform 
       - init:
           extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
       - apply:

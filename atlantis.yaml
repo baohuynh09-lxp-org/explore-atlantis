@@ -37,14 +37,14 @@ workflows:
       #- run: |
       #    eval "terraform plan -var-file=../env/${COMMENT_ARGS}.tfvars"
 
-    #apply:
-    #  steps:
-    #  #- run: |
-    #  #    rm -rf .terraform 
-    #  - init:
-    #      extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
-    #  - apply:
-    #      extra_args: [-var-file=../env/dev-sandbox.tfvars]
+    apply:
+      steps:
+      ##- run: |
+      ##    rm -rf .terraform 
+      #- init:
+      #    extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
+      - apply:
+      #    extra_args: [-var-file=../env/dev-sandbox.tfvars]
 
 
   jumphost:

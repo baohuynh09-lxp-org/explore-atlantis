@@ -1,21 +1,21 @@
 version: 3
 projects:
   - &template_network
-    apply_requirements: [mergeable, approved] #Requirements that must be satisfied before atlantis apply can be run
+    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
     dir: deployment/network
     autoplan:                                                     
       enabled: false
 
   - &template_eks
-    apply_requirements: [mergeable, approved] #Requirements that must be satisfied before atlantis apply can be run
+    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
     dir: deployment/eks
     autoplan:                                                     
       enabled: false
 
   - &template_database
-    apply_requirements: [mergeable, approved] #Requirements that must be satisfied before atlantis apply can be run
+    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
     dir: deployment/database
     autoplan:                                                     

@@ -7,6 +7,13 @@ projects:
     autoplan:                                                     
       enabled: false
 
+  - &template_jumphost
+    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+    workflow: awsWorkflow
+    dir: deployment/jumphost
+    autoplan:                                                     
+      enabled: false
+
   - &template_eks
     apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
@@ -28,6 +35,9 @@ projects:
     <<: *template_network
     name: dev-sandbox_network
   -
+    <<: *template_jumphost
+    name: dev-sandbox_jumphost
+  -
     <<: *template_eks
     name: dev-sandbox_eks
   -
@@ -41,6 +51,9 @@ projects:
   -
     <<: *template_network
     name: macquarie-uat_network
+  -
+    <<: *template_jumphost
+    name: macquarie-uat_jumphost
   -
     <<: *template_eks
     name: macquarie-uat_eks

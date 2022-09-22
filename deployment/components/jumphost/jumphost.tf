@@ -81,7 +81,7 @@ resource "aws_iam_policy_attachment" "ec2_ssm_policy_attachment" {
 #          2. module EC2 (devops-workspace)         #
 #---------------------------------------------------#
 module ec2 {
-  source                 = "../../modules/ec2"
+  source                 = "../../../modules/ec2"
 
   name                   = "devops-workspace"
   instance_count         = "${var.ec2_input.instance_count}"

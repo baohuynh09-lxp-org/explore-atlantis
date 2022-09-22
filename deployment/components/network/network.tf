@@ -5,7 +5,7 @@
 # NOTE: we dont use default ingress/egress feature from VPC modules since 
 #       we need to add "private" subnet's CIDR blocks dynamically
 module "security_group" {
-  source  = "../../modules/security_group"
+  source  = "../../../modules/security_group"
 
   ## Providers Within Modules
   ## Easier for us to "terraform destroy module separately"
@@ -88,7 +88,7 @@ module "security_group" {
 #                   2.module VPC                    #
 #---------------------------------------------------#
 module "vpc" {
-  source = "../../modules/vpc"
+  source = "../../../modules/vpc"
 
   name = "${var.customer}-${var.env}"
 

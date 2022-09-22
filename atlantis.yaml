@@ -88,8 +88,8 @@ workflows:
       
       - run: | # prepare TF configuration files
           rm -rf .terraform
-          cp ./variables.tf components/*/
-
+          find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
+          tree .
       - run: | # terraform init
           echo "ENV_init: $ENV";
           echo "COMPONENT_init: $COMPONENT";

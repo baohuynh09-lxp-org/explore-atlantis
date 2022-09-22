@@ -82,7 +82,7 @@ workflows:
       - env:   # extract saas environment name
           name: ENV
           command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
-      - env:
+      - env:   # extract component/target name
           name: COMPONENT
           command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
       
@@ -95,11 +95,11 @@ workflows:
           echo "COMPONENT_init: $COMPONENT";
           terraform init -backend-config=env/backends/${ENV}.backend.tf
 
-      #- run: | # terraform plan
-      #    terraform plan -target=module.${COMPONENT} \
-      #                   -var-file=env/input-tfvars/${ENV}.tfvars \
-      #                   -input=false \
-      #                   -out $PLANFILE
+      - run: | # terraform plan
+          terraform plan -target=module.${COMPONENT} \
+                         -var-file=env/input-tfvars/${ENV}.tfvars \
+                         -input=false \
+                         -out $PLANFILE
     apply:
       steps:
       - run: | # terraform apply

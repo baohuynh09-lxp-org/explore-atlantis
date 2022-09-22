@@ -18,6 +18,9 @@ workflows:
   network:
     plan:
       steps:
+      - env:
+          name: ENV
+          value: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
       - run: |
           rm -rf .terraform
           ENV=$(echo $PROJECT_NAME | awk -F'_' '{print $1}')
@@ -29,8 +32,10 @@ workflows:
       #    echo "TEST1: $TEST1"
 
       - run: |
+          echo "ENV: $ENV"
           eval "terraform init -backend-config=../backends/${ENV}.backend.tf"
       - run: |
+          echo "ENV: $ENV"
           eval "terraform plan -var-file=../env/${ENV}.tfvars \
                                -input=false \
                                -out $PLANFILE"

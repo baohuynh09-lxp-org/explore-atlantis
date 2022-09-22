@@ -1,32 +1,83 @@
 version: 3
 projects:
-- name: dev-sandbox_network
-  dir: deployment/network
-  workflow: network
-  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  autoplan:
-    enabled: false
+  - &template_network
+    apply_requirements: [mergeable, approved] #Requirements that must be satisfied before atlantis apply can be run
+    workflow: awsWorkflow
+    dir: deployment/network
+    autoplan:                                                     
+      enabled: false
 
-- name: dev-sandbox_jumphost
-  dir: deployment/jumphost
-  workflow: jumphost
-  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  autoplan:
-    enabled: false
+  - &template_eks
+    apply_requirements: [mergeable, approved] #Requirements that must be satisfied before atlantis apply can be run
+    workflow: awsWorkflow
+    dir: deployment/eks
+    autoplan:                                                     
+      enabled: false
+
+  - &template_database
+    apply_requirements: [mergeable, approved] #Requirements that must be satisfied before atlantis apply can be run
+    workflow: awsWorkflow
+    dir: deployment/database
+    autoplan:                                                     
+      enabled: false
+
+  #---------------------------#
+  #       dev-sandbox         #
+  #---------------------------#
+  -
+    <<: *template_network
+    name: dev-sandbox_network
+  -
+    <<: *template_eks
+    name: dev-sandbox_eks
+  -
+    <<: *template_database
+    name: dev-sandbox_database
+
+
+  #---------------------------#
+  #       macquarie-uat       #
+  #---------------------------#
+  -
+    <<: *template_network
+    name: macquarie-uat_network
+  -
+    <<: *template_eks
+    name: macquarie-uat_eks
+  -
+    <<: *template_database
+    name: macquarie-uat_database
+
+  #- name: dev-sandbox_network
+  #  dir: deployment/network
+  #  workflow: network
+  #  apply_requirements: [mergeable] 
+  #  autoplan:
+  #    enabled: false
+  #
+  #- name: dev-sandbox_jumphost
+  #  dir: deployment/jumphost
+  #  workflow: jumphost
+  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+  #  autoplan:
+  #    enabled: false
 
 workflows:
-  network:
+  awsWorkflow:
     plan:
       steps:
-      - env:
+      - env:   # extract saas environment name
           name: ENV
           command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
-      - run: |
+      
+      - run: | # prepare TF configuration files
           rm -rf .terraform
-          cp ../common/* ./
+          cp ../common/* .
+
       - run: | # terraform init
           echo "ENV_init: $ENV";
           terraform init -backend-config=../backends/${ENV}.backend.tf
+
       - run: | # terraform plan
           terraform plan -var-file=../env/${ENV}.tfvars \
                          -input=false \
@@ -35,27 +86,4 @@ workflows:
       steps:
       - run: | # terraform apply
           echo "PLANFILE: $PLANFILE"
-          ls $PLANFILE
           terraform apply $PLANFILE
-
-
-  jumphost:
-    plan:
-      steps:
-      - run: |
-          rm -rf .terraform
-          echo "COMMENT_ARGS: $COMMENT_ARGS"
-      - init:
-          extra_args: [-backend-config=../backends/dev-sandbox.backend.tf]
-      - plan:
-          extra_args: [-var-file=../env/dev-sandbox.tfvars]
-
-    apply:
-      steps:
-      - run: |
-          rm -rf .terraform
-          echo "COMMENT_ARGS:# $COMMENT_ARGS"
-      - init:
-          extra_args: [-backend-config=../backends/dev-sandbox.backend.tf]
-      - plan:
-          extra_args: [-var-file=../env/dev-sandbox.tfvars]

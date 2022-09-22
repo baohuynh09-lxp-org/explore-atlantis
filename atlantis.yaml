@@ -36,11 +36,11 @@ workflows:
       #    set -x
       #    echo "ENV_init: $ENV";
       #    terraform init -backend-config=../backends/${ENV}.backend.tf
-      - run: |
-          echo "ENV_plan: $ENV";
-          terraform plan -var-file=../env/${ENV}.tfvars \
-                               -input=false \
-                               -out $PLANFILE
+      #- run: |
+      #    echo "ENV_plan: $ENV";
+      #    terraform plan -var-file=../env/${ENV}.tfvars \
+      #                         -input=false \
+      #                         -out $PLANFILE
 
       #- init:
       #    extra_args: [-backend-config=backends/dev-sandbox.backend.tf]

@@ -1,5 +1,5 @@
 module network {
-  source               = "./network/"
+  source               = "./components/network/"
   vpc_input            = var.vpc_input
   eks_input            = var.eks_input
 
@@ -13,7 +13,7 @@ module network {
 }
 
 module jumphost {
-  source               = "./jumphost/"
+  source               = "./components/jumphost/"
   ec2_input            = var.ec2_input
   internal_input       = {
 	  network-vpc_id   = module.network.vpc_id

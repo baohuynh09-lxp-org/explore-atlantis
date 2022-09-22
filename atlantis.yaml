@@ -88,7 +88,7 @@ workflows:
       
       - run: | # prepare TF configuration files
           rm -rf .terraform
-          cp ./variables.tf $COMPONENT
+          cp ./variables.tf components/*/variables.tf
 
       - run: | # terraform init
           echo "ENV_init: $ENV";

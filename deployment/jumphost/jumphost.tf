@@ -3,12 +3,11 @@
 #------------------------------------------------------------#
 data "aws_subnet_ids" "private" {
   # Query subnet that matches with "tags" information
-  vpc_id = module.vpc.vpc_id
+  vpc_id = var.internal_input.network-vpc_id
 
   tags = {
     Name = "${var.customer}-${var.env}-private*"
   }
-  depends_on = [module.vpc]
 }
 
 # Create role "ec2_ssm_role" to use SSM
@@ -98,7 +97,6 @@ module ec2 {
     "lxp:usage" = "jumphost"
   }
   depends_on = [
-    module.vpc,
     aws_iam_role.ec2_ssm_role,
     aws_iam_instance_profile.ec2_ssm_instance_profile,
     aws_iam_role_policy.ec2_ssm_role_policy,
@@ -228,5 +226,4 @@ resource "aws_iam_user_policy" "vault_k8s_kms_policy" {
   ]
 }
 EOF
-  depends_on = [ aws_iam_user.vault_k8s_kms ]
 }

@@ -1,47 +1,47 @@
 version: 3
 projects:
-  - &template_network
+  - &template_project
     apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
-    dir: deployment/network
+    dir: deployment/
     autoplan:                                                     
       enabled: false
 
-  - &template_jumphost
-    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-    workflow: awsWorkflow
-    dir: deployment/jumphost
-    autoplan:                                                     
-      enabled: false
-
-  - &template_eks
-    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-    workflow: awsWorkflow
-    dir: deployment/eks
-    autoplan:                                                     
-      enabled: false
-
-  - &template_database
-    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-    workflow: awsWorkflow
-    dir: deployment/database
-    autoplan:                                                     
-      enabled: false
+  #- &template_jumphost
+  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+  #  workflow: awsWorkflow
+  #  dir: deployment/
+  #  autoplan:                                                     
+  #    enabled: false
+#
+  #- &template_eks
+  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+  #  workflow: awsWorkflow
+  #  dir: deployment/
+  #  autoplan:                                                     
+  #    enabled: false
+#
+  #- &template_database
+  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+  #  workflow: awsWorkflow
+  #  dir: deployment/
+  #  autoplan:                                                     
+  #    enabled: false
 
   #---------------------------#
   #       dev-sandbox         #
   #---------------------------#
   -
-    <<: *template_network
+    <<: *template_project
     name: dev-sandbox_network
   -
-    <<: *template_jumphost
+    <<: *template_project
     name: dev-sandbox_jumphost
   -
-    <<: *template_eks
+    <<: *template_project
     name: dev-sandbox_eks
   -
-    <<: *template_database
+    <<: *template_project
     name: dev-sandbox_database
 
 
@@ -49,16 +49,16 @@ projects:
   #       macquarie-uat       #
   #---------------------------#
   -
-    <<: *template_network
+    <<: *template_project
     name: macquarie-uat_network
   -
-    <<: *template_jumphost
+    <<: *template_project
     name: macquarie-uat_jumphost
   -
-    <<: *template_eks
+    <<: *template_project
     name: macquarie-uat_eks
   -
-    <<: *template_database
+    <<: *template_project
     name: macquarie-uat_database
 
   #- name: dev-sandbox_network
@@ -82,17 +82,20 @@ workflows:
       - env:   # extract saas environment name
           name: ENV
           command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
+          name: COMPONENT
+          command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
       
       - run: | # prepare TF configuration files
           rm -rf .terraform
-          cp ../common/* .
+          cp ./variables.tf $COMPONENT
 
       - run: | # terraform init
           echo "ENV_init: $ENV";
-          terraform init -backend-config=../backends/${ENV}.backend.tf
+          terraform init -backend-config=env/backends/${ENV}.backend.tf
 
       - run: | # terraform plan
-          terraform plan -var-file=../env/${ENV}.tfvars \
+          terraform plan -target=module.${COMPONENT} \
+                         -var-file=env/input-tfvars/${ENV}.tfvars \
                          -input=false \
                          -out $PLANFILE
     apply:

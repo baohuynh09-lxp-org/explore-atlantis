@@ -32,10 +32,10 @@ workflows:
       #    echo "TEST1: $TEST1"
 
       - run: |
-          echo "ENV: $ENV"
+          echo "ENV: $ENV";
           eval "terraform init -backend-config=../backends/${ENV}.backend.tf"
       - run: |
-          echo "ENV: $ENV"
+          echo "ENV: $ENV";
           eval "terraform plan -var-file=../env/${ENV}.tfvars \
                                -input=false \
                                -out $PLANFILE"

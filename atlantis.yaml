@@ -82,6 +82,7 @@ workflows:
       - env:   # extract saas environment name
           name: ENV
           command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
+      - env:
           name: COMPONENT
           command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
       
@@ -91,36 +92,16 @@ workflows:
 
       - run: | # terraform init
           echo "ENV_init: $ENV";
+          echo "COMPONENT_init: $COMPONENT";
           terraform init -backend-config=env/backends/${ENV}.backend.tf
 
-      - run: | # terraform plan
-          terraform plan -target=module.${COMPONENT} \
-                         -var-file=env/input-tfvars/${ENV}.tfvars \
-                         -input=false \
-                         -out $PLANFILE
+      #- run: | # terraform plan
+      #    terraform plan -target=module.${COMPONENT} \
+      #                   -var-file=env/input-tfvars/${ENV}.tfvars \
+      #                   -input=false \
+      #                   -out $PLANFILE
     apply:
       steps:
       - run: | # terraform apply
           echo "PLANFILE: $PLANFILE"
           terraform apply $PLANFILE
-
-    destroy:
-      steps:
-      - env:   # extract saas environment name
-          name: ENV
-          command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
-          name: COMPONENT
-          command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
-      
-      - run: | # prepare TF configuration files
-          rm -rf .terraform
-          cp ./variables.tf $COMPONENT
-
-      - run: | # terraform init
-          echo "ENV_init: $ENV";
-          terraform init -backend-config=env/backends/${ENV}.backend.tf
-
-      - run: | # terraform destroy
-          terraform plan -destroy \
-                         -target=module.${COMPONENT} \
-                         -var-file=env/input-tfvars/${ENV}.tfvars

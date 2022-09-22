@@ -20,25 +20,31 @@ workflows:
       steps:
       - run: |
           rm -rf .terraform
+          ENV=$(echo $PROJECT_NAME | awk -F'_' '{print $1}')
+          echo "ENV: $ENV"
       #    #TF_ARG=$(echo $COMMENT_ARGS | tr ',' ' ' | sed -r 's/\\(.)/\1/g')
       #    #echo "TF_ARG: $TF_ARG"
       #    TEST1=$(printf '%b\n' "$COMMENT_ARGS")
       #    echo "COMMENT_ARGS: $COMMENT_ARGS"
       #    echo "TEST1: $TEST1"
 
-      - init:
-          extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
       - run: |
-          terraform plan -var-file=../env/dev-sandbox.tfvars -input=false -out $PLANFILE
-          echo "PLANFILE: $PLANFILE"
-          ls $PLANFILE
+          eval "terraform init -backend-config=../backends/${ENV}.backend.tf"
+      - run: |
+          eval "terraform plan -var-file=../env/${ENV}.tfvars \
+                               -input=false \
+                               -out $PLANFILE"
+
+      #- init:
+      #    extra_args: [-backend-config=backends/dev-sandbox.backend.tf]
+      #- run: |
+      #    terraform plan -var-file=../env/dev-sandbox.tfvars -input=false -out $PLANFILE
+      #    echo "PLANFILE: $PLANFILE"
+      #    ls $PLANFILE
       #- plan:
       #    extra_args: [-var-file=../env/dev-sandbox.tfvars -input=false -refresh -out $PLANFILE]
 
-      #- run: |
-      #    eval "terraform init -backend-config=../backends/${TF_ARG}.backend.tf"
-      #- run: |
-      #    eval "terraform plan -var-file=../env/${COMMENT_ARGS}.tfvars"
+      
 
     apply:
       steps:

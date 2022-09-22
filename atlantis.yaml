@@ -20,7 +20,7 @@ workflows:
       steps:
       - env:
           name: ENV
-          value: 'echo $PROJECT_NAME | awk -F'_' '{print $1}''
+          value: 'echo $PROJECT_NAME | awk -F"_" "{print $1}"'
       - run: |
           rm -rf .terraform
           ENV=$(echo $PROJECT_NAME | awk -F'_' '{print $1}')

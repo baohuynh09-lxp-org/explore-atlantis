@@ -33,8 +33,7 @@ workflows:
 
       - run: |
           echo "ENV_init: $ENV";
-          eval "terraform init \
-                               -backend-config=../backends/${ENV}.backend.tf"
+          eval "terraform init -backend-config=../backends/${ENV}.backend.tf"
       - run: |
           echo "ENV_plan: $ENV";
           eval "terraform plan -var-file=../env/${ENV}.tfvars \

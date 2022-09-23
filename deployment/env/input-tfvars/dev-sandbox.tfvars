@@ -242,3 +242,4 @@ ec2_input = {
 }
 
 minio_efs_name = "minio"
+

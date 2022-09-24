@@ -15,6 +15,7 @@ module network {
 
   # componet-input
   vpc_input            = var.vpc_input
+  ec2_input            = var.ec2_input
   eks_input            = var.eks_input
 }
 

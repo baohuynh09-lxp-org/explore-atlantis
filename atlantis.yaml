@@ -7,27 +7,6 @@ projects:
     autoplan:                                                     
       enabled: false
 
-  #- &template_jumphost
-  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  #  workflow: awsWorkflow
-  #  dir: deployment/
-  #  autoplan:                                                     
-  #    enabled: false
-#
-  #- &template_eks
-  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  #  workflow: awsWorkflow
-  #  dir: deployment/
-  #  autoplan:                                                     
-  #    enabled: false
-#
-  #- &template_database
-  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  #  workflow: awsWorkflow
-  #  dir: deployment/
-  #  autoplan:                                                     
-  #    enabled: false
-
   #---------------------------#
   #       dev-sandbox         #
   #---------------------------#
@@ -43,7 +22,6 @@ projects:
   -
     <<: *template_project
     name: dev-sandbox_database
-
 
   #---------------------------#
   #       macquarie-uat       #
@@ -61,20 +39,6 @@ projects:
     <<: *template_project
     name: macquarie-uat_database
 
-  #- name: dev-sandbox_network
-  #  dir: deployment/network
-  #  workflow: network
-  #  apply_requirements: [mergeable] 
-  #  autoplan:
-  #    enabled: false
-  #
-  #- name: dev-sandbox_jumphost
-  #  dir: deployment/jumphost
-  #  workflow: jumphost
-  #  apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
-  #  autoplan:
-  #    enabled: false
-
 workflows:
   awsWorkflow:
     plan:
@@ -91,15 +55,15 @@ workflows:
           find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
           tree .
       - run: | # terraform init
-          echo "ENV_init: $ENV";
-          echo "COMPONENT_init: $COMPONENT";
-          terraform init -backend-config=env/backends/${ENV}.backend.tf
+          terraform init -backend-config=env/${ENV}/backend.tf
 
       - run: | # terraform plan
           terraform plan -target=module.${COMPONENT} \
-                         -var-file=env/input-tfvars/${ENV}.tfvars \
+                         -var-file=env/${ENV}/terraform.tfvars \
                          -input=false \
                          -out $PLANFILE
+          echo "PLANFILE: $PLANFILE"
+
     apply:
       steps:
       - run: | # terraform apply

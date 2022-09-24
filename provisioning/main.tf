@@ -15,11 +15,10 @@ module network {
 
   # componet-input
   vpc_input            = var.vpc_input
-  ec2_input            = var.ec2_input
   eks_input            = var.eks_input
 }
 
-### 2. IAM Role & Policy (ssm/k8s-vault/...)
+### 2. IAM Role & Policy (EC2-jumphost/ssm/k8s-vault/...)
 module iamRolePolicy {
   source               = "./components/iamRolePolicy/"
   global_input         = var.global_input

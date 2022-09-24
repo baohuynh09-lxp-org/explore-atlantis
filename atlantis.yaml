@@ -15,13 +15,19 @@ projects:
     name: dev-sandbox_network
   -
     <<: *template_project
-    name: dev-sandbox_jumphost
+    name: dev-sandbox_iamRolePolicy
+  -
+    <<: *template_project
+    name: dev-sandbox_monitoring
   -
     <<: *template_project
     name: dev-sandbox_eks
   -
     <<: *template_project
     name: dev-sandbox_database
+  -
+    <<: *template_project
+    name: dev-sandbox_redisKafka
 
   #---------------------------#
   #       macquarie-uat       #
@@ -31,13 +37,20 @@ projects:
     name: macquarie-uat_network
   -
     <<: *template_project
-    name: macquarie-uat_jumphost
+    name: macquarie-uat_iamRolePolicy
+  -
+    <<: *template_project
+    name: macquarie-uat_monitoring
   -
     <<: *template_project
     name: macquarie-uat_eks
   -
     <<: *template_project
     name: macquarie-uat_database
+  -
+    <<: *template_project
+    name: macquarie-uat_redisKafka
+
 
 workflows:
   awsWorkflow:

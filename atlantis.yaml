@@ -1,0 +1,71 @@
+version: 3
+projects:
+  - &template_project
+    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+    workflow: awsWorkflow
+    dir: deployment/
+    autoplan:                                                     
+      enabled: false
+
+  #---------------------------#
+  #       dev-sandbox         #
+  #---------------------------#
+  -
+    <<: *template_project
+    name: dev-sandbox_network
+  -
+    <<: *template_project
+    name: dev-sandbox_jumphost
+  -
+    <<: *template_project
+    name: dev-sandbox_eks
+  -
+    <<: *template_project
+    name: dev-sandbox_database
+
+  #---------------------------#
+  #       macquarie-uat       #
+  #---------------------------#
+  -
+    <<: *template_project
+    name: macquarie-uat_network
+  -
+    <<: *template_project
+    name: macquarie-uat_jumphost
+  -
+    <<: *template_project
+    name: macquarie-uat_eks
+  -
+    <<: *template_project
+    name: macquarie-uat_database
+
+workflows:
+  awsWorkflow:
+    plan:
+      steps:
+      - env:   # extract saas environment name
+          name: ENV
+          command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
+      - env:   # extract component/target name
+          name: COMPONENT
+          command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
+      
+      - run: | # prepare TF configuration files
+          rm -rf .terraform
+          find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
+          tree .
+      - run: | # terraform init
+          terraform init -backend-config=env/${ENV}/backend.tf
+
+      - run: | # terraform plan
+          terraform plan -target=module.${COMPONENT} \
+                         -var-file=env/${ENV}/terraform.tfvars \
+                         -input=false \
+                         -out $PLANFILE
+          echo "PLANFILE: $PLANFILE"
+
+    apply:
+      steps:
+      - run: | # terraform apply
+          echo "PLANFILE: $PLANFILE"
+          terraform apply $PLANFILE

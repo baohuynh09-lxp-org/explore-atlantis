@@ -361,3 +361,12 @@ variable "ec2_input" {
 variable "minio_efs_name" {
   type = string
 }
+
+#----------------------------------------#
+#          Internal variables            #
+#----------------------------------------#
+variable "internal_input" {
+  type        = any
+  default     = {}
+  description = "internal input"
+}

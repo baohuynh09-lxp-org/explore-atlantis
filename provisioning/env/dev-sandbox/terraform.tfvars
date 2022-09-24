@@ -2,12 +2,13 @@
 #               GLOBAL                  #
 #---------------------------------------#
 # full tag-name: "dev-sandbox-us-west-2"
-customer       = "dev"
-env            = "sandbox"
-region         = "us-west-2"
-BYOK           = ""
-AWS_ACCOUNT_ID = "4986-9196-5545"
-KMS_vault_autounseal = "arn:aws:kms:us-west-2:498691965545:key/ad99c35e-fff0-4b65-b655-8e095272861d"
+global_input = {
+  customer       = "dev"
+  env            = "sandbox"
+  region         = "us-west-2"
+  BYOK           = "arn:aws:kms:us-west-2:498691965545:key/ad99c35e-fff0-4b65-b655-8e095272861d"
+  AWS_ACCOUNT_ID = "4986-9196-5545"
+}
 
 #----------------------------------------#
 #              module VPC                #
@@ -26,6 +27,14 @@ vpc_input = {
   # Setting more NACL, see link below
   # https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/network-acls/main.tf
 }
+
+#----------------------------------------#
+#         module monitoring              #
+#----------------------------------------#
+monitoring_input = {
+  retention_in_days  = 120
+}
+
 
 #----------------------------------------#
 #              module EKS                #
@@ -69,18 +78,18 @@ eks_input = {
       #worker_additional_security_group_ids = [aws_security_group.public_subnet_access_private.id]
     }
 
-    nodepool_voip = {
-      name                          = "nodepool_voip"
-      #subnets                       = module.vpc.public_subnets
-      desired_capacity              = 1 
-      max_capacity                  = 1 
-      min_capacity                  = 1 
-      instance_types                = ["t3.small"]
-      capacity_type                 = "ON_DEMAND"
-      public_ip                     = true
-      create_launch_template        = true
-      kubelet_extra_args            = "--register-with-taints=nodepool_voip=true:NoSchedule --node-labels=nodepool_voip=true"
-    }
+    #nodepool_voip = {
+    #  name                          = "nodepool_voip"
+    #  #subnets                       = module.vpc.public_subnets
+    #  desired_capacity              = 1 
+    #  max_capacity                  = 1 
+    #  min_capacity                  = 1 
+    #  instance_types                = ["t3.small"]
+    #  capacity_type                 = "ON_DEMAND"
+    #  public_ip                     = true
+    #  create_launch_template        = true
+    #  kubelet_extra_args            = "--register-with-taints=nodepool_voip=true:NoSchedule --node-labels=nodepool_voip=true"
+    #}
   }
 }
 
@@ -169,7 +178,7 @@ documentdb_input = {
 #----------------------------------------#
 #       module ELASTICACHE-REDIS         #
 #----------------------------------------#
-elasticache_redis_input = {
+redis_input = {
   number_cache_clusters      = 2
   node_type                  = "cache.t3.medium"
   cluster_mode_enabled       = false
@@ -217,7 +226,7 @@ es_input = {
 #----------------------------------------#
 #         module KAFKA (MSK)             #
 #----------------------------------------#
-kafka_msk_input = {
+kafka_input = {
   instance_type                       = "kafka.t3.small"
   kafka_version                       = "2.6.2"
   volume_size                         = 100
@@ -241,4 +250,9 @@ ec2_input = {
   instance_type          = "t2.medium"
 }
 
-minio_efs_name = "minio"
+#----------------------------------------#
+#          module minio-efs              #
+#----------------------------------------#
+minio_efs_input = {
+  name = "minio"
+}

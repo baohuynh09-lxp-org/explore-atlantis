@@ -13,7 +13,7 @@ terraform {
 
 # providers
 provider "aws" {
-  region = var.region
+  region = var.global_input.region
 }
 
 provider "helm" {

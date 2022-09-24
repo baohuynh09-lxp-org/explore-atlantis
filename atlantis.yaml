@@ -3,7 +3,7 @@ projects:
   - &template_project
     apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
-    dir: deployment/
+    dir: provisioning/
     autoplan:                                                     
       enabled: false
 
@@ -53,6 +53,7 @@ workflows:
       - run: | # prepare TF configuration files
           rm -rf .terraform
           find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
+          find ./components/* -type d -maxdepth 1 -exec cp local.tf {} \;
           tree .
       - run: | # terraform init
           terraform init -backend-config=env/${ENV}/backend.tf

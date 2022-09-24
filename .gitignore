@@ -1,1 +1,7 @@
+./.DS_Store
 dev-sandbox-us-west-2
+provisioning/components/*/variables.tf
+provisioning/components/*/local.tf
+provisioning/.terraform*
+provisioning/.DS_Store
+

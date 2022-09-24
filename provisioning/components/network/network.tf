@@ -7,11 +7,6 @@
 module "security_group" {
   source  = "../../../modules/security_group"
 
-  ## Providers Within Modules
-  ## Easier for us to "terraform destroy module separately"
-  #providers = {
-  #  aws = aws
-  #}
 
   name        = "${var.sg_input.name}"
   description = "private access to database subnets"
@@ -78,9 +73,9 @@ module "security_group" {
     },
   ]
   tags = {
-    env   = var.env
-    site  = "${var.customer}-${var.env}-${var.region}"
-    Name  = "${var.customer}-${var.env}-private-access-db"
+    env   = var.global_input.env
+    site  = "${var.global_input.customer}-${var.global_input.env}-${var.global_input.region}"
+    Name  = "${var.global_input.customer}-${var.global_input.env}-private-access-db"
   }
 }
 
@@ -90,12 +85,12 @@ module "security_group" {
 module "vpc" {
   source = "../../../modules/vpc"
 
-  name = "${var.customer}-${var.env}"
+  name = "${var.global_input.customer}-${var.global_input.env}"
 
   cidr = "${var.vpc_input.cidr}"
 
   # Subnet declaration
-  azs                 = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  azs                 = ["${var.global_input.region}a", "${var.global_input.region}b", "${var.global_input.region}c"]
   private_subnets     = "${var.vpc_input.private_subnets}"
   public_subnets      = "${var.vpc_input.public_subnets}"
   database_subnets    = "${var.vpc_input.database_subnets}"
@@ -119,11 +114,11 @@ module "vpc" {
 
   # Disable database subnet-group for RDS instance to be nested
   create_database_subnet_group   = true
-  database_subnet_group_tags = {Name: "${var.customer}-${var.env}-database"}
+  database_subnet_group_tags = {Name: "${var.global_input.customer}-${var.global_input.env}-database"}
 
   tags = {
-    env  = var.env
-    site = "${var.customer}-${var.env}-${var.region}"
+    env  = var.global_input.env
+    site = "${var.global_input.customer}-${var.global_input.env}-${var.global_input.region}"
   }
 
   enable_dns_hostnames = true
@@ -136,11 +131,9 @@ module "vpc" {
   create_flow_log_cloudwatch_iam_role  = "${var.vpc_input.enable_flow_log}" ? true : false
   flow_log_max_aggregation_interval    = 60
   vpc_flow_log_tags = {
-    Name = "${var.customer}-${var.env}-flowlog"
+    Name = "${var.global_input.customer}-${var.global_input.env}-flowlog"
   }
 }
-
-
 
 #---------------------------------------------------#
 #            3. resource Elastic IP                 #
@@ -150,9 +143,9 @@ resource "aws_eip" "nat_public_ip" {
   count = 1
   vpc = true
   tags = {
-    env   = "${var.env}"
-    site  = "${var.customer}-${var.env}-${var.region}"
-    Name  = "${var.customer}-${var.env}-eip-nat"
+    env   = "${var.global_input.env}"
+    site  = "${var.global_input.customer}-${var.global_input.env}-${var.global_input.region}"
+    Name  = "${var.global_input.customer}-${var.global_input.env}-eip-nat"
   }
 }
 
@@ -160,20 +153,20 @@ resource "aws_eip" "istio_ingress_public_ip" {
   count = 1
   vpc = true
   tags = {
-    env   = "${var.env}"
-    site  = "${var.customer}-${var.env}-${var.region}"
-    Name  = "${var.customer}-${var.env}-eip-istio-ingress"
+    env   = "${var.global_input.env}"
+    site  = "${var.global_input.customer}-${var.global_input.env}-${var.global_input.region}"
+    Name  = "${var.global_input.customer}-${var.global_input.env}-eip-istio-ingress"
   }
 }
 
 # EIP for EKS nodepool_voip workers
 resource "aws_eip" "nodepool_voip_worker" {
-  count = "${var.eks_input.node_groups.nodepool_voip.max_capacity}"
+  count = local.use_nodepool_voip ? var.eks_input.node_groups.nodepool_voip.max_capacity : 0
   vpc = true
   tags = {
-    env           = "${var.env}"
-    site          = "${var.customer}-${var.env}-${var.region}"
-    Name          = "${var.customer}-${var.env}-eip-nat"
+    env           = "${var.global_input.env}"
+    site          = "${var.global_input.customer}-${var.global_input.env}-${var.global_input.region}"
+    Name          = "${var.global_input.customer}-${var.global_input.env}-eip-nat"
     nodepool_voip = true
   }
 }

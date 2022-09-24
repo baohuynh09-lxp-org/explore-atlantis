@@ -1,34 +1,24 @@
 #---------------------------------------#
 #               GLOBAL                  #
 #---------------------------------------#
-variable "customer" {
-  type        = string
-  description = "The customer.Ex:Macquarie"
+variable "global_input" {
+  type = object({
+    customer             = string
+    env                  = string
+    region               = string
+	  BYOK                 = string
+    AWS_ACCOUNT_ID       = string
+  })
+  description = "All global variables"
 }
 
-variable "env" {
-  type        = string
-  description = "The environment.Ex:prod-saas"
-}
-
-variable "region" {
-  type = string
-  description = "AWS Region"
-}
-
-variable "BYOK" {
-  type        = string
-  description = "ARN of BYOK encrypted key from customer"
-}
-
-variable "KMS_vault_autounseal" {
-  type        = string
-  description = "ARN of KMS_vault_autounseal"
-}
-
-variable "AWS_ACCOUNT_ID" {
-  type        = string
-  description = "AWS account ID"
+#----------------------------------------#
+#          Internal variables            #
+#----------------------------------------#
+variable "internal_input" {
+  type        = any
+  default     = {}
+  description = "internal input"
 }
 
 #----------------------------------------#
@@ -52,6 +42,19 @@ variable "vpc_input" {
     enable_flow_log     = false
   }
   description = "All settings for VPC"
+}
+
+#----------------------------------------#
+#          module monitoring             #
+#----------------------------------------#
+variable "monitoring_input" {
+  type = object({
+    retention_in_days   = number
+  })
+  default = {
+    retention_in_days   = 30
+  }
+  description = "All settings for monitoring module"
 }
 
 #----------------------------------------#
@@ -203,7 +206,7 @@ variable "documentdb_input" {
 #----------------------------------------#
 #       module ELASTICACHE_REDIS         #
 #----------------------------------------#
-variable "elasticache_redis_credentials" {
+variable "redis_credentials" {
   type = object({
     auth_token = string
   })
@@ -215,7 +218,7 @@ variable "elasticache_redis_credentials" {
   description = "All settings for Elasticache_redis credentials"
 }
 
-variable "elasticache_redis_input" {
+variable "redis_input" {
   type = object({
     number_cache_clusters      = number
     node_type                  = string
@@ -308,7 +311,7 @@ variable "es_input" {
 #----------------------------------------#
 #         module KAFKA (MSK)             #
 #----------------------------------------#
-variable "kafka_msk_input" {
+variable "kafka_input" {
   type = object({
     instance_type                       = string
     kafka_version                       = string
@@ -358,15 +361,16 @@ variable "ec2_input" {
   description = "All settings for EC2 "
 }
 
-variable "minio_efs_name" {
-  type = string
-}
 
 #----------------------------------------#
-#          Internal variables            #
+#          module minio-efs              #
 #----------------------------------------#
-variable "internal_input" {
-  type        = any
-  default     = {}
-  description = "internal input"
+variable "minio_efs_input" {
+  type = object({
+    name = string
+  })
+  default = {
+    name = "minio"
+  }
+  description = "All settings for minio_efs"
 }

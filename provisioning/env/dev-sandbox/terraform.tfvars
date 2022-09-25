@@ -253,6 +253,7 @@ ec2_input = {
 #----------------------------------------#
 #          module minio-efs              #
 #----------------------------------------#
-minio_efs_input = {
-  name = "minio"
+efscsi_input = {
+  name                      = "minio"
+  efs_backup_policy_enabled = true
 }

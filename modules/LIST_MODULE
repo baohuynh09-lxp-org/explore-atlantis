@@ -9,3 +9,4 @@
 - Kafka (MSK):          https://github.com/angelabad/terraform-aws-msk-cluster
 - EC2:                  https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
 - S3:                   https://github.com/terraform-aws-modules/terraform-aws-s3-bucket
+- EFS(v0.32.7)          https://github.com/cloudposse/terraform-aws-efs

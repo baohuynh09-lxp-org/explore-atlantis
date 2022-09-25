@@ -59,8 +59,8 @@ module eks {
 
   # internal-reference
   internal_input       = {
-	network-vpc_id          = module.network.vpc_id
-	network-public_subnets  = module.network.public_subnets
+	  network-vpc_id          = module.network.vpc_id
+	  network-public_subnets  = module.network.public_subnets
     network-private_subnets = module.network.private_subnets
   }
 }
@@ -108,3 +108,25 @@ module redisKafka {
     network-database_subnets_ids                 = module.network.database_subnets_ids
   }
 }
+
+### 7. EFS
+module efscsi {
+  source               = "./components/efscsi/"
+  global_input         = var.global_input
+
+  # componet-input
+  efscsi_input        = var.efscsi_input
+
+  # internal-reference
+  internal_input      = {
+    network-vpc_id                = module.network.vpc_id
+    network-private_subnets       = module.network.private_subnets
+    eks-cluster_oidc_provider_arn = module.eks.cluster_oidc_provider_arn
+    eks-cluster_oidc_provider_url = module.eks.cluster_oidc_provider_url
+  }
+}
+
+
+
+
+

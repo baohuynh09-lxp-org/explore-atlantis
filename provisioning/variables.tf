@@ -363,14 +363,16 @@ variable "ec2_input" {
 
 
 #----------------------------------------#
-#          module minio-efs              #
+#          module efs-csi              #
 #----------------------------------------#
-variable "minio_efs_input" {
+variable "efscsi_input" {
   type = object({
-    name = string
+    name                      = string
+    efs_backup_policy_enabled = bool
   })
   default = {
-    name = "minio"
+    name                      = "minio"
+    efs_backup_policy_enabled = true
   }
-  description = "All settings for minio_efs"
+  description = "All settings for EFS"
 }

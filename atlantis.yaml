@@ -31,6 +31,9 @@ projects:
   -
     <<: *template_project
     name: dev-sandbox_efscsi
+  -
+    <<: *template_project
+    name: dev-sandbox_imessage
 
   #---------------------------#
   #       macquarie-uat       #

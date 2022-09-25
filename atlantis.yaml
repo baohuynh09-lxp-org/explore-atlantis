@@ -28,6 +28,9 @@ projects:
   -
     <<: *template_project
     name: dev-sandbox_redisKafka
+  -
+    <<: *template_project
+    name: dev-sandbox_efscsi
 
   #---------------------------#
   #       macquarie-uat       #

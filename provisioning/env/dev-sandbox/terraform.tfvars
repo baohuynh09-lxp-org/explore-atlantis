@@ -251,9 +251,28 @@ ec2_input = {
 }
 
 #----------------------------------------#
-#          module minio-efs              #
+#          module EFS-CSI                #
 #----------------------------------------#
 efscsi_input = {
   name                      = "minio"
   efs_backup_policy_enabled = true
+}
+
+#----------------------------------------#
+#          module MACOS (iMessage)       #
+#----------------------------------------#
+imessage_input = {
+  # macos configuration
+  ami             = "ami-07a0f396e6eb97c9f"
+  instance_type   = "mac1.metal"
+  count           = 1
+  name            = "devsandbox-mac"
+  key_name        = "macos-sshkey"
+
+  # dedicated vpc
+  sg_name         = "public-access-mac"
+  region          = "us-east-1"
+  cidr            = "10.11.0.0/16"
+  public_subnets  = ["10.11.1.0/24"]
+  enable_flow_log = false
 }

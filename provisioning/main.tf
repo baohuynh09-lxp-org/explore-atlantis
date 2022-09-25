@@ -8,7 +8,7 @@ data "aws_region" "current" {}
 #----------------------------------------#
 #             SaaS Components            #
 #----------------------------------------#
-### 1. Networking (VPC + EC2 jumphost)
+### 1. Networking (VPC + SecurityGroup)
 module network {
   source               = "./components/network/"
   global_input         = var.global_input
@@ -109,7 +109,7 @@ module redisKafka {
   }
 }
 
-### 7. EFS
+### 7. EFS-CSI
 module efscsi {
   source               = "./components/efscsi/"
   global_input         = var.global_input
@@ -126,6 +126,14 @@ module efscsi {
   }
 }
 
+### 8. iMessage (dedicated VPC + MacOS)
+module imessage {
+  source               = "./components/imessage/"
+  global_input         = var.global_input
+
+  # componet-input
+  imessage_input        = var.imessage_input
+}
 
 
 

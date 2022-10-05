@@ -1,7 +1,7 @@
 version: 3
 projects:
   - &template_project
-    apply_requirements: [mergeable] #Requirements that must be satisfied before atlantis apply can be run
+    apply_requirements: [mergeable,approved] #Requirements that must be satisfied before atlantis apply can be run
     workflow: awsWorkflow
     dir: provisioning/
     autoplan:                                                     
@@ -64,10 +64,10 @@ workflows:
       steps:
       - env:   # extract saas environment name
           name: ENV
-          command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
+          command: "echo $PROJECT_NAME | awk -F'-' '{print $1}'"
       - env:   # extract component/target name
           name: COMPONENT
-          command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
+          command: "echo $PROJECT_NAME | awk -F'-' '{print $2}'"
       
       - run: | # prepare TF configuration files
           rm -rf .terraform

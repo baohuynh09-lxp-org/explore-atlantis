@@ -68,13 +68,22 @@ workflows:
       - env:   # extract component/target name
           name: COMPONENT
           command: "echo $PROJECT_NAME | awk -F'-' '{print $2}'"
+      - env:
+          name: AWS_ACCESS_KEY_ID
+          command: "ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}'); eval echo \${${ENV}_accesskey}"
+      - env:
+          name: AWS_SECRET_ACCESS_KEY
+          command: "ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}'); eval echo \${${ENV}_secretkey}"
+
+      - run: | # get IAM credentials to access remote state file (s3/blobstorage)
+          eval export AWS_ACCESS_KEY_ID=\${${ENV}_accesskey}
+          eval export AWS_SECRET_ACCESS_KEY=\${${ENV}_secretkey}
+
       - run: | # prepare TF configuration files
           rm -rf .terraform
           find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
           find ./components/* -type d -maxdepth 1 -exec cp local.tf {} \;
       - run: | # terraform init
-          eval export AWS_ACCESS_KEY_ID=\${${ENV}_accesskey}
-          eval export AWS_SECRET_ACCESS_KEY=\${${ENV}_secretkey}
           echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
           echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
           terraform init -backend-config=env/${ENV}/backend.tf

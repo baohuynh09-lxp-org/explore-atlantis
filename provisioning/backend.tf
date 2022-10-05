@@ -14,9 +14,9 @@ terraform {
 # providers
 provider "aws" {
   region     = var.global_input.region
-  access_key = data.vault_aws_access_credentials.creds.access_key
-  secret_key = data.vault_aws_access_credentials.creds.secret_key
-  token      = data.vault_aws_access_credentials.creds.security_token
+  access_key  = module.vault.aws_access_key
+  secret_key  = module.vault.aws_secret_key
+  token       = module.vault.aws_token
 }
 
 provider "helm" {

@@ -22,6 +22,33 @@ variable "internal_input" {
 }
 
 #----------------------------------------#
+#          module VAULT                  #
+#----------------------------------------#
+variable "vault_terraformapprole_token" {
+  type        = string
+  default     = ""
+  description = "token to access Vault & get DB passwords"
+}
+
+variable "vault_input" {
+  type = object({
+    vault_endpoint              = string
+    vault_aws_backend_role_name = string
+    role_arns                   = list(string)
+    default_sts_ttl             = number
+    infra_secret_path           = string
+  })
+  default     = {
+    vault_endpoint              = "http://127.0.0.1:8200"
+    vault_aws_backend_role_name = "terraform-deployer" 
+    role_arns                   = [""]
+    default_sts_ttl             = 900 # seconds
+    infra_secret_path           = "secret/infra/dev_sandbox"
+  }
+  description = "input for Vault setting"
+}
+
+#----------------------------------------#
 #              module VPC                #
 #----------------------------------------#
 variable "vpc_input" {

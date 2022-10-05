@@ -3,7 +3,7 @@
 #----------------------------------------------#
 provider "vault" {
   address         = var.vault_input.vault_endpoint
-  token           = var.vault_terraformapprole_token
+  token           = var.terraformapprole_token
 }
 
 #----------------------------------------------#

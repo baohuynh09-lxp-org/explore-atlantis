@@ -14,12 +14,11 @@ global_input = {
 #              module VAULT              #
 #----------------------------------------#
 vault_input = {
-  #vault_endpoint              = "http://vault-api-dev.actions-runner-system.svc.cluster.local:8200"
-  vault_endpoint              = "http://127.0.0.1:8200"
+  vault_endpoint              = "http://vault-api-dev.actions-runner-system.svc.cluster.local:8200"
   vault_aws_backend_role_name = "terraform-deployer"
   role_arns                   = ["arn:aws:iam::498691965545:role/vault-aws-engine-test"]
   default_sts_ttl             = 900 # seconds
-  infra_secret_path           = "secret/infra/dev_sandbox"
+  infra_secret_path            = "secret/infra/dev_sandbox"
 }
 
 #----------------------------------------#
@@ -44,7 +43,11 @@ vpc_input = {
 #         module monitoring              #
 #----------------------------------------#
 monitoring_input = {
-  retention_in_days  = 120
+  retention_in_days      = 30
+  logging_bucket         = "dev-sandbox-loki-logging"
+  tracing_bucket         = "dev-sandbox-tempo-tracing"
+  logging_lifecycle_rule = []
+  tracing_lifecycle_rule = []
 }
 
 

@@ -76,9 +76,9 @@ module database {
   rds_input               = var.rds_input
   documentdb_input        = var.documentdb_input
   es_input                = var.es_input
-  rds_credentials         = {"username":"postgres","password":"12345678910"}
-  documentdb_credentials  = {"username":"docdb_user","password":"12345678910"}
-  es_credentials          = {"username":"elasticuser","password": "12345678910"}
+  rds_credentials         = {"username":"postgres","password": data.vault_generic_secret.saas_secret.data["postgres_password"]}
+  documentdb_credentials  = {"username":"docdb_user","password": data.vault_generic_secret.saas_secret.data["nosql_password"]}
+  es_credentials          = {"username":"elasticuser","password": data.vault_generic_secret.saas_secret.data["es_password"]}
 
   # internal-reference
   internal_input       = {
@@ -107,7 +107,7 @@ module redisKafka {
   vpc_input                = var.vpc_input
   redis_input              = var.redis_input
   kafka_input              = var.kafka_input  
-  redis_credentials        = {"auth_token":"12345678910abc"}
+  redis_credentials        = {"auth_token": data.vault_generic_secret.saas_secret.data["redis_password"]}
 
   # internal-reference
   internal_input       = {

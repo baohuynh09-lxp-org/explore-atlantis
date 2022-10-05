@@ -75,7 +75,6 @@ workflows:
           rm -rf .terraform
           find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
           find ./components/* -type d -maxdepth 1 -exec cp local.tf {} \;
-          tree .
       - run: | # terraform init
           terraform init -backend-config=env/${ENV}/backend.tf
 

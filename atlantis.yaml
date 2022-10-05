@@ -8,54 +8,57 @@ projects:
       enabled: false
 
   #---------------------------#
-  #       dev-sandbox         #
+  #       dev_sandbox         #
   #---------------------------#
   -
     <<: *template_project
-    name: dev-sandbox_network
+    name: dev_sandbox-vault
   -
     <<: *template_project
-    name: dev-sandbox_iamRolePolicy
+    name: dev_sandbox-network
   -
     <<: *template_project
-    name: dev-sandbox_monitoring
+    name: dev_sandbox-iamRolePolicy
   -
     <<: *template_project
-    name: dev-sandbox_eks
+    name: dev_sandbox-monitoring
   -
     <<: *template_project
-    name: dev-sandbox_database
+    name: dev_sandbox-eks
   -
     <<: *template_project
-    name: dev-sandbox_redisKafka
+    name: dev_sandbox-database
   -
     <<: *template_project
-    name: dev-sandbox_efscsi
+    name: dev_sandbox-redisKafka
   -
     <<: *template_project
-    name: dev-sandbox_imessage
+    name: dev_sandbox-efscsi
+  -
+    <<: *template_project
+    name: dev_sandbox-imessage
 
   #---------------------------#
   #       macquarie-uat       #
   #---------------------------#
   -
     <<: *template_project
-    name: macquarie-uat_network
+    name: macquarie_uat-network
   -
     <<: *template_project
-    name: macquarie-uat_iamRolePolicy
+    name: macquarie_uat-iamRolePolicy
   -
     <<: *template_project
-    name: macquarie-uat_monitoring
+    name: macquarie_uat-monitoring
   -
     <<: *template_project
-    name: macquarie-uat_eks
+    name: macquarie_uat-eks
   -
     <<: *template_project
-    name: macquarie-uat_database
+    name: macquarie_uat-database
   -
     <<: *template_project
-    name: macquarie-uat_redisKafka
+    name: macquarie_uat-redisKafka
 
 
 workflows:
@@ -64,17 +67,34 @@ workflows:
       steps:
       - env:   # extract saas environment name
           name: ENV
-          command: "echo $PROJECT_NAME | awk -F'_' '{print $1}'"
+          command: "echo $PROJECT_NAME | awk -F'-' '{print $1}'"
       - env:   # extract component/target name
           name: COMPONENT
-          command: "echo $PROJECT_NAME | awk -F'_' '{print $2}'"
-      
+          command: "echo $PROJECT_NAME | awk -F'-' '{print $2}'"
+      - env:
+          name: AWS_ACCESS_KEY_ID
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_accesskey}
+      - env:
+          name: AWS_SECRET_ACCESS_KEY
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_secretkey}
+      - env:
+          name: TF_VAR_vault_tfapprole_token
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_vault_tfapprole_token}
+
+
       - run: | # prepare TF configuration files
           rm -rf .terraform
           find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;
           find ./components/* -type d -maxdepth 1 -exec cp local.tf {} \;
-          tree .
       - run: | # terraform init
+          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
           terraform init -backend-config=env/${ENV}/backend.tf
 
       - run: | # terraform plan
@@ -86,6 +106,21 @@ workflows:
 
     apply:
       steps:
+      - env:
+          name: AWS_ACCESS_KEY_ID
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_accesskey}
+      - env:
+          name: AWS_SECRET_ACCESS_KEY
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_secretkey}
+      - env:
+          name: TF_VAR_vault_tfapprole_token
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_vault_tfapprole_token}
       - run: | # terraform apply
           echo "PLANFILE: $PLANFILE"
           terraform apply $PLANFILE

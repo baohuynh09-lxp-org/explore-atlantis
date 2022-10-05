@@ -12,6 +12,9 @@ projects:
   #---------------------------#
   -
     <<: *template_project
+    name: dev_sandbox-vault
+  -
+    <<: *template_project
     name: dev_sandbox-network
   -
     <<: *template_project

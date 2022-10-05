@@ -1,1 +1,13 @@
-dev-sandbox-us-west-2
+env/*/.terraform*
+env/*/kubeconfig*
+env/*/untitled*
+provisioning/components/*/variables.tf
+provisioning/components/*/local.tf
+provisioning/.terraform*
+provisioning/.DS_Store
+provisioning/kubeconfig*
+provisioning/list_resource
+provisioning/update_resource
+provisioning/backup/
+
+

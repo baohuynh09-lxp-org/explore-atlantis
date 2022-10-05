@@ -18,7 +18,7 @@ vault_input = {
   vault_aws_backend_role_name = "terraform-deployer"
   role_arns                   = ["arn:aws:iam::498691965545:role/vault-aws-engine-test"]
   default_sts_ttl             = 900 # seconds
-  infra_secret_path            = "secret/infra/dev_sandbox"
+  infra_secret_path           = "secret/infra/dev_sandbox"
 }
 
 #----------------------------------------#

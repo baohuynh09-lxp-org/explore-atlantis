@@ -106,6 +106,21 @@ workflows:
 
     apply:
       steps:
+      - env:
+          name: AWS_ACCESS_KEY_ID
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_accesskey}
+      - env:
+          name: AWS_SECRET_ACCESS_KEY
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_secretkey}
+      - env:
+          name: TF_VAR_vault_tfapprole_token
+          command: |
+            ENV=$(echo $PROJECT_NAME | awk -F'-' '{print $1}')
+            eval echo \${${ENV}_vault_tfapprole_token}
       - run: | # terraform apply
           echo "PLANFILE: $PLANFILE"
           terraform apply $PLANFILE

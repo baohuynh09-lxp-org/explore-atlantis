@@ -1,0 +1,13 @@
+- VPC:                  https://github.com/terraform-aws-modules/terraform-aws-vpc
+- SECURITY_GROUP:       https://github.com/terraform-aws-modules/terraform-aws-security-group
+- EKS:                  https://github.com/terraform-aws-modules/terraform-aws-eks
+- RDS:                  https://github.com/terraform-aws-modules/terraform-aws-rds
+- KMS:                  https://github.com/cloudposse/terraform-aws-kms-key
+- DocumentDB:           https://github.com/cloudposse/terraform-aws-documentdb-cluster
+- Elasticache (Redis):  https://github.com/umotif-public/terraform-aws-elasticache-redis
+- Elasticsearch:        https://github.com/lgallard/terraform-aws-elasticsearch
+- Kafka (MSK):          https://github.com/angelabad/terraform-aws-msk-cluster
+- EC2:                  https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
+- S3:                   https://github.com/terraform-aws-modules/terraform-aws-s3-bucket
+- EFS                   https://github.com/cloudposse/terraform-aws-efs/tree/0.32.7
+- Notify-slack          https://github.com/terraform-aws-modules/terraform-aws-notify-slack/tree/v5.3.0

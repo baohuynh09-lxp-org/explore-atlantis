@@ -8,6 +8,17 @@ data "aws_region" "current" {}
 #----------------------------------------#
 #             SaaS Components            #
 #----------------------------------------#
+### Vautl
+module vault {
+  source                = "./components/vault/"
+  global_input          = var.global_input
+
+  # componet-input
+  vault_input           = var.vault_input
+  vault_tfapprole_token = var.vault_tfapprole_token
+}
+
+
 ### 1. Networking (VPC + SecurityGroup)
 module network {
   source               = "./components/network/"

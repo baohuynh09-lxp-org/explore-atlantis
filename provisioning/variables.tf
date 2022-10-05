@@ -24,7 +24,7 @@ variable "internal_input" {
 #----------------------------------------#
 #          module VAULT                  #
 #----------------------------------------#
-variable "vault_terraformapprole_token" {
+variable "vault_tfapprole_token" {
   type        = string
   default     = ""
   description = "token to access Vault & get DB passwords"

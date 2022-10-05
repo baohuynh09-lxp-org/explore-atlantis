@@ -8,54 +8,54 @@ projects:
       enabled: false
 
   #---------------------------#
-  #       dev-sandbox         #
+  #       dev_sandbox         #
   #---------------------------#
   -
     <<: *template_project
-    name: dev-sandbox_network
+    name: dev_sandbox-network
   -
     <<: *template_project
-    name: dev-sandbox_iamRolePolicy
+    name: dev_sandbox-iamRolePolicy
   -
     <<: *template_project
-    name: dev-sandbox_monitoring
+    name: dev_sandbox-monitoring
   -
     <<: *template_project
-    name: dev-sandbox_eks
+    name: dev_sandbox-eks
   -
     <<: *template_project
-    name: dev-sandbox_database
+    name: dev_sandbox-database
   -
     <<: *template_project
-    name: dev-sandbox_redisKafka
+    name: dev_sandbox-redisKafka
   -
     <<: *template_project
-    name: dev-sandbox_efscsi
+    name: dev_sandbox-efscsi
   -
     <<: *template_project
-    name: dev-sandbox_imessage
+    name: dev_sandbox-imessage
 
   #---------------------------#
   #       macquarie-uat       #
   #---------------------------#
   -
     <<: *template_project
-    name: macquarie-uat_network
+    name: macquarie_uat-network
   -
     <<: *template_project
-    name: macquarie-uat_iamRolePolicy
+    name: macquarie_uat-iamRolePolicy
   -
     <<: *template_project
-    name: macquarie-uat_monitoring
+    name: macquarie_uat-monitoring
   -
     <<: *template_project
-    name: macquarie-uat_eks
+    name: macquarie_uat-eks
   -
     <<: *template_project
-    name: macquarie-uat_database
+    name: macquarie_uat-database
   -
     <<: *template_project
-    name: macquarie-uat_redisKafka
+    name: macquarie_uat-redisKafka
 
 
 workflows:
@@ -68,7 +68,9 @@ workflows:
       - env:   # extract component/target name
           name: COMPONENT
           command: "echo $PROJECT_NAME | awk -F'-' '{print $2}'"
-      
+      - run: | # get IAM credentials to access remote state file (s3/blobstorage)
+          eval export AWS_ACCESS_KEY_ID=\${${ENV}_accesskey}
+          eval export AWS_SECRET_ACCESS_KEY=\${${ENV}_secretkey}
       - run: | # prepare TF configuration files
           rm -rf .terraform
           find ./components/* -type d -maxdepth 1 -exec cp variables.tf {} \;

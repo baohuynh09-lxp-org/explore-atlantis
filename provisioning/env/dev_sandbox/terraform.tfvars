@@ -293,6 +293,5 @@ imessage_input = {
   enable_flow_log = false
 
   # slack alert
-  slack_webhook_url = "https://hooks.slack.com/services/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"
   slack_channel     = "leapxpert_alert"
 }

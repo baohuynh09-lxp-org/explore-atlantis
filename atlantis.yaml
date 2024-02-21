@@ -89,3 +89,8 @@ workflows:
       - run: | # terraform apply
           echo "PLANFILE: $PLANFILE"
           terraform apply $PLANFILE
+
+
+
+
+

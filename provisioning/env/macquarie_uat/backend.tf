@@ -6,3 +6,7 @@ encrypt        = "true"
 
 # Using locking state with dynamoDB
 dynamodb_table = "terraform-state-lock"
+
+
+
+
